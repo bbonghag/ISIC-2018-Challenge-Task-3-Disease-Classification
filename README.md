@@ -41,6 +41,7 @@ Challenge Link: https://challenge.isic-archive.com/landing/2018/
      |VASC|142|
      |DF|115|
      
+      - Data Imbalance 존재.
       - NV가 뭐길래 이렇게 많은걸까??
         - 멜라닌 세포성 모반(Melanocytic nevus)
         - [Reference](https://velog.io/@jj770206/ISIC-dataset) 참고

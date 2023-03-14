@@ -2,22 +2,27 @@
 
 ### Task : Image Classification - 피부 병변 이미지를 7개의 라벨로 분류. <br/>
 
-Challenge Link: https://challenge.isic-archive.com/landing/2018/
+[Challenge Link](https://challenge.isic-archive.com/landing/2018/)
 
 
 ---
 
 ## Description
 
-1. 데이터 : Kaggle Dataset 사용 - [Skin cancer: HAM10000](https://www.kaggle.com/datasets/surajghuwalewala/ham1000-segmentation-and-classification?select=masks)
+### 1. 데이터 : Kaggle Dataset 사용 - [Skin cancer: HAM10000](https://www.kaggle.com/datasets/surajghuwalewala/ham1000-segmentation-and-classification?select=masks)
    
    - 데이터 분석
-     - 10000장의 이미지 및 라벨값csv파일 (+Segmentation을 위한 마스킹이미지도 같이 들어있음)
+     - 10015장의 이미지 및 라벨값csv파일 (+Segmentation을 위한 마스킹이미지도 같이 들어있음)
+     - 라벨당 10%씩 분할하여 998장 테스트셋 생성함
      - 이미지 크기 : 450 x 600 x 3
      - 7개의 라벨
+     <br/>
      
-     
-     | label | lesion |
+      <details>
+      <summary>라벨의 약칭과 풀네임 </summary>
+      <div markdown="1">
+
+      label | lesion |
      |-------|--------|     
      | nv  | Melanocytic nevi |     
      | mel | Melanoma |     
@@ -26,8 +31,16 @@ Challenge Link: https://challenge.isic-archive.com/landing/2018/
      | akiec | Actinic keratoses|     
      | vasc  | Vascular lesions|     
      | df | Dermatofibroma|
+
+      </div>
+      </details>
      
-     - 라벨당 이미지 개수
+     
+<br/>
+     
+     
+     
+   - 라벨당 이미지 개수
      <img src="https://user-images.githubusercontent.com/103362361/188297176-34f9c64e-ca4f-4f0b-bb6f-057ad3c0844e.png"  width="400" height="300"/>
      
      
@@ -41,20 +54,61 @@ Challenge Link: https://challenge.isic-archive.com/landing/2018/
      |VASC|142|
      |DF|115|
      
-      - Data Imbalance 존재.
-      - NV가 뭐길래 이렇게 많은걸까??
-        - 멜라닌 세포성 모반(Melanocytic nevus)
-        - [Reference](https://velog.io/@jj770206/ISIC-dataset) 참고
+  - Data Imbalance 존재.
+  - NV가 뭐길래 이렇게 많은걸까??
+    - 멜라닌 세포성 모반(Melanocytic nevus)
+    - [Reference](https://velog.io/@jj770206/ISIC-dataset) 참고
         
         
+---   
         
         
-        
-2. 진행 내용
+### 2. 진행 내용
 
+   -  Rank1 ~ 10 페이퍼 참고 및 정리, 사용해볼 기법들 정리 - [10개 페이퍼 리뷰 및 정리한 노션 페이지](https://www.notion.so/Rank1-10-5aa47146a64d45a7a548dc4291e7993d?pvs=4)
+      - 논문에서 사용한 전처리(Augmentation, resize등), 사용한 모델, 클래스 불균형에 대한 접근방법, 성능지표, 앙상블 여부 등
+   - 베이스 모델 생성 후 성능 확인
+   - Class Imbalance에 대한 접근법, 사용한 해결방법
+   - 논문에서 사용한 전처리 기법들 사용 
+   - 모델 앙상블
 
-    
+#### 베이스 모델 생성 후 성능 확인
+- 이미지 리사이즈와 정규화같은 기본적인 전처리를 한 후에 간단한 모델을 쌓아서 성능 확인을 함. 
    
+   => accuracy = 0.71. 하지만 극단적인 클래스 불균형을 생각하면 NV라벨을 찍기만 해도 60%이상의 정확성이 나오므로 여기서 accuracy는 신뢰도가 떨어져 성능 지표로 사용할 수 없음.
+   
+   따라서 Precision / Recall / F1-score를 측정, 0.4712 / 0.2746 / 0.347 .
+
+
+<br/>
+
+
+#### Class Imbalance에 대한 접근법, 사용한 해결방법
+- 위의 데이터 분석 부분에서도 언급했듯이 가장 많은 라벨 NV는 6700장, 가장 적은 라벨 DF는 115장으로 대략 60배의 차이를 보인다. 
+  즉, NV로 찍기만 해도 60%의 정확도가 나오므로 학습에 부적합한 데이터셋이다. 이 클래스 불균형에 대해 논문에서는 여러 방법들을 제시하고 사용했는데 나는 그 중 Augmentation, Class weights 를 사용하였다. 
+
+
+
+
+
+<br/>
+<br/>
+
+
+
+<details>
+<summary>10개 논문 리뷰 후 진행방향</summary>
+<div markdown="1">
+1. 전처리 기법(Augmentation, resize 등)
+2. 사용한 모델
+3. 클래스 불균형에 대한 해결방법(over/undersampling, class weight 등)
+4. 사용한 성능지표 및 모델 검증 방법(대회에서 지정한 성능지표)
+5. 앙상블 방법
+
+
+</div>
+</details>
+
    
 
 

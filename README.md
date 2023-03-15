@@ -66,13 +66,14 @@
         
 ### II. Progress
    -  Rank1 ~ 10 페이퍼 참고 및 정리, 사용해볼 기법들 정리 - [10개 페이퍼 리뷰 및 정리한 노션 페이지](https://www.notion.so/Rank1-10-5aa47146a64d45a7a548dc4291e7993d?pvs=4)
-      - 논문에서 사용한 전처리(Augmentation, resize등), 사용한 모델, 클래스 불균형에 대한 접근방법, 성능지표, 앙상블 여부 등
-   - 베이스 모델 생성 후 성능 확인
-   - 논문에서 사용한 전처리 기법들, Class Imbalance에 대한 접근법  사용한 해결방법
+   
+   - 논문에서 사용한 전처리(Augmentation, resize등), 사용한 모델, 클래스 불균형에 대한 접근방법, 성능지표, 앙상블 여부 등
+   - 베이스 모델 생성 후 성능 확인, 다른 모델 사용. 
+   - 논문에서 사용한 전처리 기법들, Class Imbalance에 대한 해결방법
    - 모델 앙상블
 
 #### 2.1 베이스 모델 생성 후 성능 확인
-- 이미지 리사이즈와 정규화같은 기본적인 전처리를 한 후에 간단한 모델을 쌓아서 성능 확인을 함. 
+- 이미지 리사이즈와 정규화같은 기본적인 전처리를 한 후에 간단한 모델을 쌓아서 성능 확인. 그리고 ResNet152에 전이학습을 진행하였다.
    
    => accuracy = 0.71. 하지만 극단적인 클래스 불균형을 생각하면 NV라벨을 찍기만 해도 60%이상의 정확성이 나오므로 여기서 accuracy는 신뢰도가 떨어져 성능 지표로 사용할 수 없음.
    
@@ -117,7 +118,7 @@
 <br/>
 
 
-#### 2.2 논문에서 사용한 전처리 기법들, Class Imbalance에 대한 접근법  사용한 해결방법
+#### 2.2 논문에서 사용한 전처리 기법들, Class Imbalance에 대한 해결방법
 - 위의 데이터 분석 부분에서도 언급했듯이 가장 많은 라벨 NV는 6700장, 가장 적은 라벨 DF는 115장으로 대략 60배의 차이를 보인다. 
   
   즉, NV로 찍기만 해도 60%의 정확도가 나오므로 이대로 사용한다면 편향된 모델이 학습될 것이다. 
@@ -138,6 +139,7 @@
    <div markdown="1">
       
    ```Python
+   <pre><code>   
    main_path = '/content/images/'
 
    train_paths, test_paths = [], []
@@ -155,14 +157,14 @@
    test_labels = test_df.label.values
 
    len(train_paths), len(train_labels), len(test_paths), len(test_labels)
-   
+
    s = np.arange(len(train_paths))
    np.random.shuffle(s)
 
    train_paths = train_paths[s]
    train_labels = train_labels[s]
    X_train, X_val, y_train, y_val = train_test_split(train_paths, train_labels, test_size=0.2, random_state=42)
-         
+
 
    ss = s = np.arange(len(test_paths))
    np.random.shuffle(ss)
@@ -187,6 +189,7 @@
    train_dataset = train_dataset.map(preprocessing).batch(batch_size).prefetch(1)
    val_dataset = val_dataset.map(preprocessing).batch(batch_size).prefetch(1)
    test_dataset = test_dataset.map(preprocessing).batch(batch_size).prefetch(1)
+   </code></pre>
    ```
       
    </div>
@@ -207,7 +210,7 @@
    <summary>Offline Image Augmentation Image Processing </summary>
    <div markdown="1">
 
-      ```
+      ```Python
       def rotation(img, angle=90):
           angle = int(np.random.uniform(-angle, angle))
           h, w = img.shape[:2]
@@ -259,12 +262,11 @@
           image = np.array(random_crop(img))
 
         return image  
-      
-         
-         ```
+        ```
       
    </div>
    </details>
+
 
  
  <br/>
@@ -305,6 +307,12 @@
 ```
 <br/>
 <br/>
+
+---
+
+## Result & Metrics
+
+
 
 
 
